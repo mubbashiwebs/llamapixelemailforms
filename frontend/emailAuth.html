@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Email Auth Form</h1>
+    <form >
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br><br>
+
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required>
+        <br><br>
+
+        <label for="toEmail">To Email:</label>
+        <input type="text" id="toEmail" name="toEmail" required>
+        <br><br>
+
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="Select Form">Select Form</option>
+            <option value="contact form">Contact Form</option>
+            <option value="career form">Career Form</option>
+        </select>
+        <br><br>
+
+        <input type="submit"  value="Submit">
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            const messageDiv = document.createElement('div');
+            form.appendChild(messageDiv);
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                // Gather form data
+                const formData = new FormData(form);
+                console.log(formData)
+                const data = Object.fromEntries(formData.entries());
+                console.log(data)
+                if(data.category == 'Select Form' ){
+                    alert('please slect form')
+                    return
+                }
+
+                try {
+                    // Send form data to the server
+                    const response = await fetch('http://localhost:3000/api/addAuth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    console.log(response)
+                    // Check response status
+                    if (response.ok) {
+                        const result = await response.text();
+                        console.log(result)
+                        messageDiv.textContent = result;
+                        messageDiv.style.color = 'green';
+                        form.reset(); // Reset form fields
+                    } else {
+                        messageDiv.textContent = 'Failed to submit form. Please try again.';
+                        messageDiv.style.color = 'red';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    messageDiv.textContent = 'An error occurred. Please try again later.';
+                    messageDiv.style.color = 'red';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
