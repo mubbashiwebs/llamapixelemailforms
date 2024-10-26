@@ -61,7 +61,11 @@
     <script>
         document.getElementById('contactForm').addEventListener('submit', function(event) {
             const recaptchaResponse = document.querySelector('#g-recaptcha-response').value;
-            
+            if (!recaptchaResponse) {
+                event.preventDefault(); // Prevent form submission
+                alert('Please complete the reCAPTCHA.');
+                return false;
+            }
            
             // The reCAPTCHA response token is present, form will be submitted
             return true;
